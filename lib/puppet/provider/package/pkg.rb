@@ -79,7 +79,7 @@ Puppet::Type.type(:package).provide :pkg, :parent => Puppet::Provider::Package d
 
   # uninstall the package
   def uninstall
-    pkg :uninstall, '-r', @resource[:name]
+    pkg :uninstall, @resource[:name]
   end
 
   # update the package to the latest version available
