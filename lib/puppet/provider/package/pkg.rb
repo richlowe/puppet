@@ -27,7 +27,7 @@ Puppet::Type.type(:package).provide :pkg, :parent => Puppet::Provider::Package d
     packages
   end
 
-  self::REGEX = %r{^(\S+)\s+(\S+)\s+(\S+)\s+}
+  self::REGEX = %r{^(\S+)\s+(?:\([^)]+\)\s+)?(\S+)\s+(\S+)\s+}
   self::FIELDS = [:name, :version, :status]
 
   def self.parse_line(line)
@@ -55,21 +55,11 @@ Puppet::Type.type(:package).provide :pkg, :parent => Puppet::Provider::Package d
   end
 
   # return the version of the package
-  # TODO deal with multiple publishers
   def latest
-    version = nil
     pkg(:list, "-Ha", @resource[:name]).split("\n").each do |line|
-      v = line.split[2]
-      case v
-      when "known"
-        return v
-      when "installed"
-        version = v
-      else
-        Puppet.warn "unknown package state for #{@resource[:name]}: #{v}"
-      end
+      return self.class.parse_line(line)[:version]
     end
-    version
+    nil
   end
 
   # install the package

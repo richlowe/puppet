@@ -36,6 +36,11 @@ describe provider do
     result.should == {:name => "dummy", :version => "1.0@1.0-1.0",
       :ensure => :present, :status => "installed",
       :provider => :pkg, :error => "ok"}
+
+    result = provider.parse_line("dummy (foo.org) 1.0@1.0-1.0 installed ----")
+    result.should == {:name => "dummy", :version => "1.0@1.0-1.0",
+      :ensure => :present, :status => "installed",
+      :provider => :pkg, :error => "ok"}
   end
 
   it "should fail to parse an incorrect line" do
